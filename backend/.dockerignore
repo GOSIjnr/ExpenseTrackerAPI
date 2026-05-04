@@ -1,0 +1,15 @@
+bin/
+obj/
+*.user
+*.pdb
+*.suo
+.vscode/
+.git/
+.gitignore
+appsettings.Development.json
+TestResults/
+ExpensesTracker.Tests/
+LICENSE
+README.md
+HOSTING.md
+DEPLOYMENT.md
