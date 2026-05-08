@@ -1,0 +1,115 @@
+using ExpenseTracker.Api.Constants.Cookies;
+using ExpenseTracker.Api.Constants.RateLimiting;
+using ExpenseTracker.Api.Constants.Routes;
+using ExpenseTracker.Api.Endpoints.Auth.Handlers.LoginUser;
+using ExpenseTracker.Api.Endpoints.Auth.Handlers.LogoutUser;
+using ExpenseTracker.Api.Endpoints.Auth.Handlers.RefreshSession;
+using ExpenseTracker.Api.Endpoints.Auth.Handlers.RegisterUser;
+using ExpenseTracker.Api.Models;
+using ExpenseTracker.Application.Features.Auth.Models;
+using Scalar.AspNetCore;
+
+namespace ExpenseTracker.Api.Endpoints.Auth;
+
+internal sealed class AuthEndpoints : IEndpointModule
+{
+    public void MapEndpoints(IEndpointRouteBuilder app)
+    {
+        RouteGroupBuilder group = app.MapGroup(ApiRoutes.Auth.Base)
+            .WithTags("Authentication");
+
+        group.MapPost(ApiRoutes.Auth.Register, RegisterUserEndpointHandler.Handle)
+            .RequireRateLimiting(RateLimitPolicyNames.Auth.Register)
+            .WithName(nameof(RegisterUserEndpointHandler))
+            .WithSummary("Register a new user")
+            .WithDescription("""
+                Registers a new user with the provided details:
+
+                - `UserName`: Desired username (trimmed).
+                - `Email`: User's email (hashed internally).
+                - `Password`: User's password (hashed internally).
+                - `FirstName`, `MiddleName`, `LastName`: Personal names (encrypted).
+
+                On success, the `Location` header contains the URI of the new user.
+
+                Possible responses:
+                - `201 Created`: User successfully registered.
+                - `400 BadRequest`: Invalid or missing input.
+                - `409 Conflict`: Email already in use.
+                - `500 InternalServerError`: Unexpected server error.
+                """)
+            .Produces<ApiResponse<object>>(StatusCodes.Status201Created)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<object>>(StatusCodes.Status409Conflict)
+            .Produces<ApiResponse<object>>(StatusCodes.Status500InternalServerError);
+
+        group.MapPost(ApiRoutes.Auth.Login, LoginUserEndpointHandler.Handle)
+            .RequireRateLimiting(RateLimitPolicyNames.Auth.Login)
+            .WithName(nameof(LoginUserEndpointHandler))
+            .WithSummary("Login a user")
+            .WithDescription($"""
+                Logs in a user and creates a new session:
+
+                - `Identifier`: Email or username.
+                - `Password`: User's password.
+                - `RememberMe`: Optional; if true, session lasts 7 days, otherwise 8 hours.
+
+                On success, a secure HTTP-only cookie `{CookieKeys.Session}` is set to manage the session.
+
+                Possible responses:
+                - `200 OK`: Login successful.
+                - `400 BadRequest`: Invalid input.
+                - `401 Unauthorized`: Incorrect credentials or account locked.
+                - `500 InternalServerError`: Unexpected server error.
+                """)
+            .Produces<ApiResponse<SessionTimestampsResponse>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status400BadRequest)
+            .Produces<ApiResponse<object>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse<object>>(StatusCodes.Status500InternalServerError);
+
+        group.MapPost(ApiRoutes.Auth.Refresh, RefreshSessionEndpointHandler.Handle)
+            .RequireRateLimiting(RateLimitPolicyNames.Auth.Refresh)
+            .WithName(nameof(RefreshSessionEndpointHandler))
+            .WithSummary("Refresh user session")
+            .WithDescription($"""
+                Refreshes the current user session, extending its expiration
+                **only if the session is within the allowed refresh threshold**.
+
+                **Authentication Required**: A valid session is needed.
+
+                On success, a new secure HTTP-only `{CookieKeys.Session}` cookie is set with updated timestamps.
+
+                Possible responses:
+                - `200 OK`: Session successfully refreshed.
+                - `401 Unauthorized`: No valid session, session expired, or not eligible for refresh yet.
+                - `500 InternalServerError`: Unexpected server error.
+                """)
+            .Produces<ApiResponse<SessionTimestampsResponse>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse<object>>(StatusCodes.Status500InternalServerError)
+            .RequireAuthorization();
+
+        group.MapPost(ApiRoutes.Auth.Logout, LogoutUserEndpointHandler.Handle)
+            .RequireRateLimiting(RateLimitPolicyNames.Auth.Logout)
+            .WithName(nameof(LogoutUserEndpointHandler))
+            .WithSummary("Logout user")
+            .WithDescription($"""
+                Logs out the current user by revoking their session.
+
+                **Authentication Required**: A valid session is needed.
+
+                This endpoint performs the following actions:
+                - Revokes the current session in the database.
+                - Deletes the `{CookieKeys.Session}` cookie from the client.
+
+                Possible responses:
+                - `200 OK`: Successfully logged out.
+                - `401 Unauthorized`: No valid session (user may already be logged out).
+                - `500 InternalServerError`: Unexpected server error.
+                """)
+            .Produces<ApiResponse<object>>(StatusCodes.Status200OK)
+            .Produces<ApiResponse<object>>(StatusCodes.Status401Unauthorized)
+            .Produces<ApiResponse<object>>(StatusCodes.Status500InternalServerError)
+            .RequireAuthorization();
+    }
+}

@@ -1,0 +1,18 @@
+<Solution>
+
+  <Folder Name="/config/">
+    <File Path=".gitattributes" />
+    <File Path=".gitignore" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+  </Folder>
+
+  <Folder Name="/backend/">
+    <Project Path="backend/ExpenseTracker.Api/ExpenseTracker.Api.csproj" />
+    <Project Path="backend/ExpenseTracker.Application/ExpenseTracker.Application.csproj" />
+    <Project Path="backend/ExpenseTracker.Domain/ExpenseTracker.Domain.csproj" />
+    <Project Path="backend/ExpenseTracker.Infrastructure/ExpenseTracker.Infrastructure.csproj" />
+    <Project Path="backend/ExpenseTracker.Persistence/ExpenseTracker.Persistence.csproj" />
+  </Folder>
+
+</Solution>

@@ -1,142 +1,80 @@
-# ============================================
-# .NET Backend (C#)
-# ============================================
-
-## Build artifacts
-**/bin/
-**/obj/
-out/
-Generated_Code/
-
-## Rider and VS Code
-.idea/
-.vscode/
-*.suo
-*.user
-*.userosscache
-*.sln.docstates
-
-## ASP.NET temporary files
-*.dbmdl
-*.bak
-*.Backup
+logs
 *.log
-*.vspscc
-*.vssscc
-
-## User-specific files
-*.rsuser
-*.sdf
-*.cache
-*.db
-*.pdb
-.qodo
-
-## Dotnet stuff
-project.lock.json
-project.fragment.lock.json
-artifacts/
-*.deps.json
-*.runtimeconfig.dev.json
-
-## NuGet packages
-*.nupkg
-*.snupkg
-packages/
-*.nuspec
-*.psmdcp
-
-## Test Results
-TestResults/
-*.vs/
-
-## Logs
-logs/
-*.log
-
-## LocalDB
-*.mdf
-*.ldf
-
-# ============================================
-# Frontend (React/Vite)
-# ============================================
-
-## Dependencies
-node_modules/
-
-## Build output
-dist/
-dist-ssr/
-
-## Development files
+npm-debug.log
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+libpeerconnection.log
+testem.log
 
-# ============================================
-# Environment Variables
-# ============================================
-# IMPORTANT: Only ignore local env files
-# Keep .env.example for documentation
+node_modules
+typings
 
-## Local environment files (with secrets)
-.env.local
-.env.*.local
-backend/appsettings.Development.json
+dist
+/dist
+dist-ssr
+/tmp
+/out-tsc
+/bazel-out
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+artifacts/
 
-## REMOVE THESE LINES - They were breaking deployment:
-# .env           <- This was ignoring ALL .env files
-# .env.*         <- This was too broad
-# secrets.json   <- Server-side only
+.angular
+/.angular/cache
+.cache
+.sass-cache/
+coverage
+.cache
 
-# ============================================
-# Operating System Files
-# ============================================
+.env
+.env.*
 
-## Mac OS
-.DS_Store
-
-## Windows
-Thumbs.db
-ehthumbs.db
-Desktop.ini
-
-# ============================================
-# Editor Files
-# ============================================
-
-## VS Code
+.vscode
 .vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
 !.vscode/extensions.json
+!.vscode/mcp.json
+.history/*
 
-## Rider/ReSharper
-_ReSharper*/
-*.ReSharper
-*.DotSettings.user
+.idea
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
 
-## Visual Studio
-*.ntvs*
-*.njsproj
+.DS_Store
+Thumbs.db
+
+*.suo
+*.user
+*.userosscache
+*.rsuser
+*.sln.docstates
+*.userprefs
+mono_crash.*
+TestResults*
+.dotnet
+
+connect.lock
+/connect.lock
+__screenshots__/
 *.sw?
-
-# ============================================
-# Docker (Optional - Keep if you use Docker)
-# ============================================
-# Uncomment these if you use Docker:
-# **/Dockerfile.*
-# **/docker-compose*.yml
-# **/.dockerignore
-
-# ============================================
-# Vercel
-# ============================================
-.vercel
-
-# ============================================
-# Documentation (Ignore all .md except README)
-# ============================================
-*.md
-!README.md
